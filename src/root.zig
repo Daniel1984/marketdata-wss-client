@@ -43,7 +43,7 @@ fn deinitClient(self: *Self) void {
 }
 
 pub fn connectWebSocket(self: *Self) !void {
-    const uri = try std.Uri.parse(self.endpoint);
+    const uri = try std.Uri.parse(self.url);
 
     const host_component = uri.host.?;
     const host = switch (host_component) {
