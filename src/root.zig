@@ -114,7 +114,7 @@ pub fn reconnect(self: *Self) !void {
     }
 }
 
-pub fn write(self: *Self, data: []const u8) !void {
+pub fn write(self: *Self, data: []u8) !void {
     if (self.client) |*client| {
         try client.write(data);
     } else {
@@ -122,7 +122,7 @@ pub fn write(self: *Self, data: []const u8) !void {
     }
 }
 
-pub fn writePong(self: *Self, data: []const u8) !void {
+pub fn writePong(self: *Self, data: []u8) !void {
     if (self.client) |*client| {
         try client.writePong(data);
     } else {
