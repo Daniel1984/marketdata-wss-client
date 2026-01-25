@@ -30,7 +30,7 @@ pub fn init(allocator: std.mem.Allocator, opts: Opts) !Self {
     };
 }
 
-fn deinit(self: *Self) void {
+pub fn deinit(self: *Self) void {
     self.deinitClient();
     self.allocator.free(self.url);
 }
