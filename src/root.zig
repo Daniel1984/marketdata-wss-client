@@ -113,3 +113,48 @@ pub fn reconnect(self: *Self) !void {
         return error.ReconnectionFailed;
     }
 }
+
+pub fn write(self: *Self, data: []const u8) !void {
+    if (self.client) |*client| {
+        try client.write(data);
+    } else {
+        return error.ClientNotConnected;
+    }
+}
+
+pub fn writePong(self: *Self, data: []const u8) !void {
+    if (self.client) |*client| {
+        try client.writePong(data);
+    } else {
+        return error.ClientNotConnected;
+    }
+}
+
+pub fn read(self: *Self) !?wss.Message {
+    if (self.client) |*client| {
+        return try client.read();
+    }
+    return error.ClientNotConnected;
+}
+
+pub fn readTimeout(self: *Self, timeout_ms: u32) !void {
+    if (self.client) |*client| {
+        try client.readTimeout(timeout_ms);
+    } else {
+        return error.ClientNotConnected;
+    }
+}
+
+pub fn done(self: *Self, msg: wss.Message) void {
+    if (self.client) |*client| {
+        client.done(msg);
+    }
+}
+
+pub fn close(self: *Self, opts: anytype) !void {
+    if (self.client) |*client| {
+        try client.close(opts);
+    } else {
+        return error.ClientNotConnected;
+    }
+}
