@@ -151,9 +151,9 @@ pub fn done(self: *Self, msg: wss.Message) void {
     }
 }
 
-pub fn close(self: *Self, opts: anytype) !void {
+pub fn close(self: *Self) !void {
     if (self.client) |*client| {
-        try client.close(opts);
+        try client.close(.{});
     } else {
         return error.ClientNotConnected;
     }
