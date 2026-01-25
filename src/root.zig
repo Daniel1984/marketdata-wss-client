@@ -30,7 +30,7 @@ pub fn init(allocator: std.mem.Allocator, opts: Opts) !Self {
     };
 }
 
-fn deinitClient(self: *Self) void {
+fn deinit(self: *Self) void {
     if (self.client) |*client| {
         client.deinit();
         self.client = null;
@@ -79,7 +79,7 @@ pub fn connectWebSocket(self: *Self) !void {
 }
 
 pub fn reconnect(self: *Self) !void {
-    self.deinitClient();
+    self.deinit();
 
     var retry_count: u32 = 0;
     const max_retries = self.max_retries;
