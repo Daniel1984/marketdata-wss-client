@@ -22,7 +22,7 @@ pub const Opts = struct {
 pub fn init(allocator: std.mem.Allocator, opts: Opts) !Self {
     return Self{
         .allocator = allocator,
-        .url = try allocator.dupez(u8, opts.stream_url),
+        .url = try allocator.dupeZ(u8, opts.url),
         .handshake_timeout = opts.handshake_timeout,
         .max_size = opts.max_size,
         .buffer_size = opts.buffer_size,
@@ -31,6 +31,11 @@ pub fn init(allocator: std.mem.Allocator, opts: Opts) !Self {
 }
 
 fn deinit(self: *Self) void {
+    self.deinitClient();
+    self.allocator.free(self.url);
+}
+
+fn deinitClient(self: *Self) void {
     if (self.client) |*client| {
         client.deinit();
         self.client = null;
@@ -79,7 +84,7 @@ pub fn connectWebSocket(self: *Self) !void {
 }
 
 pub fn reconnect(self: *Self) !void {
-    self.deinit();
+    self.deinitClient();
 
     var retry_count: u32 = 0;
     const max_retries = self.max_retries;
