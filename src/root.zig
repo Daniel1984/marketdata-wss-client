@@ -69,10 +69,17 @@ pub fn connectWebSocket(self: *Self) !void {
         .percent_encoded => |encoded| encoded,
     };
 
+    // Use "/" if path is empty
+    const handshake_path = if (path.len == 0) "/" else path;
+
+    std.log.info("ws handshake path: '{s}'", .{handshake_path});
+
     const headers = try std.fmt.allocPrint(self.allocator, "Host: {s}", .{host});
     defer self.allocator.free(headers);
 
-    self.client.?.handshake(path, .{
+    std.log.info("ws handshake headers: {s}", .{headers});
+
+    self.client.?.handshake(handshake_path, .{
         .timeout_ms = self.handshake_timeout,
         .headers = headers,
     }) catch |err| {
