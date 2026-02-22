@@ -4,7 +4,7 @@ const wss = @import("websocket");
 pub const Self = @This();
 
 allocator: std.mem.Allocator,
-url: []const u8,
+url: [:0]const u8,
 handshake_timeout: u32,
 max_size: u32,
 buffer_size: u32,
