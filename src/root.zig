@@ -9,6 +9,7 @@ handshake_timeout: u32,
 max_size: u32,
 buffer_size: u32,
 max_retries: u32,
+read_timeout_ms: u32,
 client: ?wss.Client = null,
 
 pub const Opts = struct {
@@ -27,6 +28,7 @@ pub fn init(allocator: std.mem.Allocator, opts: Opts) !Self {
         .max_size = opts.max_size,
         .buffer_size = opts.buffer_size,
         .max_retries = opts.max_retries,
+        .read_timeout_ms = 0,
     };
 }
 
@@ -88,6 +90,11 @@ pub fn connectWebSocket(self: *Self) !void {
     };
 
     std.log.info("✓ ws connection and handshake successful!", .{});
+
+    // Re-apply read timeout on the new client if one was previously set
+    if (self.read_timeout_ms > 0) {
+        try self.client.?.readTimeout(self.read_timeout_ms);
+    }
 }
 
 pub fn reconnect(self: *Self) !void {
@@ -145,6 +152,7 @@ pub fn read(self: *Self) !?wss.Message {
 }
 
 pub fn readTimeout(self: *Self, timeout_ms: u32) !void {
+    self.read_timeout_ms = timeout_ms;
     if (self.client) |*client| {
         try client.readTimeout(timeout_ms);
     } else {
